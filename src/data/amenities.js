@@ -1,0 +1,91 @@
+export const amenitiesData = [
+  {
+    id: "saffron-restaurant",
+    name: "Saffron Restaurant",
+    eyebrow: "FINE DINING & AUTHENTIC CUISINE",
+    subtitle: "A culinary journey through royal South Indian traditions, Chettinad spices, and global gastronomy.",
+    description: "Saffron Restaurant is Hotel Amil's premier dining destination, offering an artfully curated menu crafted by master chefs. From traditional Virudhunagar biryanis and coastal seafood delicacies to tandoori grills and continental classics, every dish is prepared with locally-sourced native produce and fragrant hand-ground spices.",
+    timings: "Breakfast: 7:00 AM – 10:30 AM | Lunch: 12:30 PM – 3:30 PM | Dinner: 7:00 PM – 11:00 PM",
+    capacity: "Seating for 120 guests",
+    contact: "Dial Ext. 201 from your room or +91 4563 222 333",
+    features: ["A la Carte & Buffet Options", "Private Family Dining Alcoves", "Vegetarian & Jain Selections Available", "Authentic Chettinad & Continental Specialists"],
+    image: "/images/Dining/Restaurent_8k.png",
+    pattern: "B"
+  },
+  {
+    id: "amil-cafe",
+    name: "Amil Cafe",
+    eyebrow: "24-HOUR BISTRO & ESPRESSO LOUNGE",
+    subtitle: "Round-the-clock comfort with artisanal coffees, freshly baked pastries, and light savory bites.",
+    description: "Whether you arrive in the quiet hours of midnight or desire a rejuvenating dawn espresso before visiting the local temples, the 24-Hour Amil Cafe stands ready. Savor freshly brewed South Indian filter coffee, Italian espresso roasts, light gourmet sandwiches, and traditional evening snacks in an intimate, relaxing lounge setting.",
+    timings: "Open 24 Hours, 7 Days a Week",
+    capacity: "Seating for 45 guests",
+    contact: "Dial Ext. 202 from your room",
+    features: ["24-Hour Continuous Service", "Specialty Filter Kaapi & Espresso", "Artisanal Bakeries & Light Bites", "Complimentary High-Speed Wi-Fi"],
+    image: "/images/Dining/cafe.png",
+    pattern: "B"
+  },
+  {
+    id: "swimming-pool",
+    name: "The Azure Pool",
+    eyebrow: "REJUVENATION & WELLNESS",
+    subtitle: "An open-air oasis framed by tropical landscaping and gentle mountain breezes.",
+    description: "Immerse yourself in tranquility at our pristine freshwater swimming pool. Designed with a dedicated shallow wading section for children and expansive lounging sundecks, it is the quintessential haven to unwind after a day of business meetings or temple excursions across Virudhunagar district.",
+    timings: "6:30 AM – 7:30 PM Daily",
+    capacity: "Deck seating with private cabanas",
+    rules: "Appropriate synthetic swimwear is strictly required. Shower before entering. Children under 14 must be supervised by an adult guardian at all times.",
+    contact: "Concierge Ext. 100",
+    features: ["Crystal Clear Temperature-Balanced Water", "Dedicated Child Pool Section", "Plush Loungers with Towel Service", "Poolside Refreshment Menu"],
+    image: "/images/amenities/SwimmingPool_8k.png",
+    pattern: "B"
+  },
+  {
+    id: "banquet-hall",
+    name: "The Royal Amil Banquet & Convention Hall",
+    eyebrow: "CELEBRATIONS & GRAND OCCASIONS",
+    subtitle: "Rajapalayam's most distinguished venue for memorable weddings, galas, and corporate conferences.",
+    description: "With soaring ceilings, crystal chandeliers, acoustic architecture, and state-of-the-art audiovisual capabilities, our pillarless convention hall accommodates grand wedding receptions, family milestones, executive seminars, and celebratory banquets with unmatched sophistication.",
+    timings: "Available for Morning, Evening, or Full-Day Reservations",
+    capacity: "Up to 500 guests (Theater style) / 300 guests (Banquet round tables)",
+    rules: "Advance booking and event menu consultation required through our dedicated Event Sales Office.",
+    contact: "Events Desk: +91 94433 12345 / events@hotelamil.com",
+    features: ["Pillarless Grand Ballroom", "Integrated Concert-Grade AV & Stage Lighting", "Bridal Dressing Suite Included", "Customized Multi-Cuisine Catering"],
+    image: "/images/amenities/banquetHall-8k.png",
+    pattern: "B"
+  },
+  {
+    id: "amil-bar",
+    name: "The Amil Lounge & Bar",
+    eyebrow: "DISCREET LUXURY & SPIRITS",
+    subtitle: "A discreet, mood-lit sanctum showcasing aged single malts, classic cocktails, and vintage wines.",
+    description: "Unwind in the subdued elegance of The Amil Bar. Outfitted in leather upholstery, dark teak paneling, and soft jazz, our bar serves a curated cellar of world-class single malts, imported beers, handcrafted cocktails, and gourmet savory tapas prepared by our executive chefs.",
+    timings: "11:00 AM – 11:00 PM Daily",
+    capacity: "Seating for 50 guests",
+    rules: "Guests must be 21 years of age or older with valid government photo ID. Smart casual attire required.",
+    contact: "Bar Concierge Ext. 205",
+    features: ["Extensive Single Malt & Wine Selection", "Craft Signature Cocktails", "Artisan Tapas & Kebabs", "Private Booths for Discreet Conversation"],
+    image: "/images/amenities/bar 8k - 1.png",
+    pattern: "B"
+  },
+  {
+    id: "parking-area",
+    name: "Expansive Parking Facility",
+    eyebrow: "CONVENIENCE & SECURITY",
+    subtitle: "Spacious, 24/7 guarded parking accommodating 100+ vehicles, tourist buses, and wedding convoys.",
+    description: "Arrive with total peace of mind at Hotel Amil's expansive private parking grounds. Conveniently located within our secured hotel perimeter, the facility effortlessly accommodates personal cars, luxury SUVs, wedding guest fleets, and large multi-axle tour coaches. Supported by round-the-clock CCTV surveillance, illuminated bays, professional security personnel, valet services, and comfortable chauffeur resting amenities.",
+    timings: "Open 24 Hours, 7 Days a Week",
+    capacity: "Space for 100+ Cars & Dedicated Tourist Bus Bays",
+    rules: "Complimentary for all resident guests, Saffron Restaurant diners, and banquet delegates. Valet parking assistance available at the front entrance portico.",
+    contact: "Security & Concierge Desk: Ext. 100",
+    features: [
+      "Ample Space for 100+ Cars & Tourist Buses",
+      "24/7 CCTV Surveillance & Uniformed Security",
+      "Complimentary Valet Parking at Front Portico",
+      "Dedicated Electric Vehicle (EV) Charging",
+      "Chauffeur Resting Lounge & Restrooms",
+      "Wide Two-Way Access for Seamless Maneuvering"
+    ],
+    image: "/images/amenities/Parking8k.png",
+    pattern: "B"
+  }
+];

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" style="background:#1A1815;">
+  <defs>
+    <radialGradient id="roomGlow" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#2D2824" />
+      <stop offset="70%" stop-color="#1A1815" />
+      <stop offset="100%" stop-color="#12100E" />
+    </radialGradient>
+    <linearGradient id="warmLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#B08D57" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#B32B2B" stop-opacity="0.05" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Luxury Room Floor & Ceiling -->
+  <rect width="800" height="500" fill="url(#roomGlow)" />
+  
+  <!-- Subtle Architectural Perspective Lines -->
+  <g stroke="#DED5C9" stroke-opacity="0.08" stroke-width="1">
+    <line x1="0" y1="80" x2="800" y2="80" />
+    <line x1="0" y1="420" x2="800" y2="420" />
+    <line x1="0" y1="80" x2="400" y2="250" />
+    <line x1="800" y1="80" x2="400" y2="250" />
+    <line x1="0" y1="420" x2="400" y2="250" />
+    <line x1="800" y1="420" x2="400" y2="250" />
+  </g>
+
+  <!-- 360 Turntable Floor Ring -->
+  <ellipse cx="400" cy="320" rx="280" ry="110" fill="none" stroke="#DED5C9" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="6,4" />
+  <ellipse cx="400" cy="320" rx="200" ry="78" fill="none" stroke="#B08D57" stroke-opacity="0.2" stroke-width="1" />
+  
+  <!-- Current Rotation Angle Needle -->
+  <line x1="400" y1="320" x2="271.4424780626921" y2="260.24853343671975" stroke="#B32B2B" stroke-width="2" stroke-linecap="round" />
+  <circle cx="271.4424780626921" cy="260.24853343671975" r="4" fill="#B32B2B" />
+
+  <!-- Room Interior Elements in 360 Rotation -->
+  <!-- 1. Balcony / Panorama Window -->
+  <g transform="translate(444.1315927692194, 272.0495998926372)">
+    <rect x="0" y="0" width="120" height="90" rx="4" fill="#231F1C" stroke="#DED5C9" stroke-opacity="0.2" stroke-width="1" />
+    <line x1="60" y1="0" x2="60" y2="90" stroke="#B08D57" stroke-opacity="0.3" stroke-width="1" />
+    <text x="60" y="48" font-family="'Inter', sans-serif" font-size="10" fill="#DED5C9" fill-opacity="0.6" text-anchor="middle" letter-spacing="0.1em">SCENIC VIEW</text>
+  </g>
+
+  <!-- 2. Writing Desk & Minibar -->
+  <g transform="translate(458.415999821062, 183.71929210256914)">
+    <rect x="0" y="0" width="90" height="40" rx="3" fill="#2A2420" stroke="#B08D57" stroke-opacity="0.3" stroke-width="1" />
+    <circle cx="20" cy="20" r="8" fill="#B08D57" fill-opacity="0.2" />
+    <text x="45" y="24" font-family="'Inter', sans-serif" font-size="9" fill="#F6F1E9" fill-opacity="0.7" text-anchor="middle">WORK DESK</text>
+  </g>
+
+  <!-- 3. Armchair & Lounge Area -->
+  <g transform="translate(256.584000178938, 281.28070789743083)">
+    <rect x="0" y="0" width="80" height="50" rx="6" fill="#332B26" stroke="#DED5C9" stroke-opacity="0.2" stroke-width="1" />
+    <text x="40" y="28" font-family="'Inter', sans-serif" font-size="9" fill="#F6F1E9" fill-opacity="0.7" text-anchor="middle">LOUNGE</text>
+  </g>
+
+  <!-- 4. Luxury Bed Centerpiece -->
+  <g transform="translate(249.00876117949605, 166.7392000835044)">
+    <!-- Headboard -->
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#B32B2B" fill-opacity="0.4" stroke="#B32B2B" stroke-width="1" />
+    <!-- Mattress & Linens -->
+    <rect x="5" y="25" width="130" height="70" rx="4" fill="#F6F1E9" fill-opacity="0.9" />
+    <!-- Amil Red Runner -->
+    <rect x="5" y="70" width="130" height="20" fill="#B32B2B" fill-opacity="0.8" />
+    <!-- Pillows -->
+    <rect x="15" y="30" width="45" height="20" rx="2" fill="#E8DFD4" stroke="#DED5C9" stroke-width="0.8" />
+    <rect x="80" y="30" width="45" height="20" rx="2" fill="#E8DFD4" stroke="#DED5C9" stroke-width="0.8" />
+    <text x="70" y="84" font-family="'Playfair Display', serif" font-size="10" fill="#F6F1E9" font-weight="600" text-anchor="middle" letter-spacing="0.1em">HOTEL AMIL</text>
+  </g>
+
+  <!-- Luxury HUD Overlay -->
+  <g font-family="'Inter', sans-serif">
+    <!-- Room Name Eyebrow -->
+    <text x="50" y="55" font-size="11" font-weight="600" letter-spacing="0.25em" fill="#B08D57">HOTEL AMIL • 360° IMMERSIVE VIEW</text>
+    <text x="50" y="80" font-family="'Playfair Display', serif" font-size="20" font-weight="600" fill="#F6F1E9">FAMILY SUITE</text>
+    
+    <!-- Compass & Degrees -->
+    <text x="750" y="55" font-size="11" font-weight="600" letter-spacing="0.15em" fill="#B08D57" text-anchor="end">AZIMUTH 230°</text>
+    <text x="750" y="80" font-size="15" font-weight="500" fill="#F6F1E9" text-anchor="end">24 / 36</text>
+
+    <!-- Bottom Interaction Indicator -->
+    <rect x="300" y="445" width="200" height="28" rx="14" fill="#231F1C" fill-opacity="0.8" stroke="#DED5C9" stroke-opacity="0.2" />
+    <text x="400" y="463" font-size="11" font-weight="500" fill="#F6F1E9" text-anchor="middle" letter-spacing="0.08em">⟵ DRAG TO ROTATE 360° ⟶</text>
+  </g>
+</svg>

@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --amil-red: #B32B2B;
+  --amil-red-dark: #8F2424;
+
+  --charcoal: #1A1815;
+  --charcoal-text: #231F1C;
+
+  --ivory: #F6F1E9;
+  --warm-white: #FBF8F3;
+
+  --muted-gold: #B08D57;
+
+  --border-light: #DED5C9;
+  --text-muted: #756E67;
+}
+
+body {
+  background-color: var(--ivory);
+  color: var(--charcoal-text);
+  overflow-x: hidden;
+}
+
+/* Custom Swiper bullet styling to match restrained Amil aesthetic */
+.swiper-pagination-bullet {
+  background: rgba(246, 241, 233, 0.5) !important;
+  opacity: 1 !important;
+  width: 8px !important;
+  height: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--amil-red) !important;
+  width: 24px !important;
+  border-radius: 4px !important;
+}
+
+/* Horizontal scroll strip hide scrollbar but keep scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 360 Viewer interaction area */
+.spin-interaction-area {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.spin-interaction-area:active {
+  cursor: grabbing;
+}
+
+/* Pannellum 360 viewer controls clear the top-left tour badge */
+.amil-panorama .pnlm-controls-container {
+  left: auto;
+  right: 4px;
+}
