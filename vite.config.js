@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub project Pages serves this site under the repository name.
+  base: process.env.GITHUB_ACTIONS ? '/amil-landing-page-2/' : '/',
   plugins: [react()],
   server: {
     port: 3000,
