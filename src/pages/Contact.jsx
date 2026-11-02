@@ -59,16 +59,33 @@ export const Contact = () => {
                   <div className="space-y-2 text-xs font-sans text-charcoal-text">
                     <div className="flex items-center space-x-3">
                       <Phone className="w-4 h-4 text-amil-red flex-shrink-0" />
-                      <span><strong>Telephone:</strong> <a href="tel:+918111075108">+91 81110 75108</a></span>
+                      <span><strong>Telephone:</strong> <a href={`tel:${hotelData.phone.replace(/\s+/g, '')}`} className="hover:text-amil-red transition-colors">{hotelData.phone}</a></span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <Phone className="w-4 h-4 text-amil-red flex-shrink-0" />
-                      <span><strong>Mobile / Desk:</strong> {hotelData.mobile}</span>
+                      <span><strong>Mobile / Desk:</strong> <a href={`tel:${hotelData.mobile.replace(/\s+/g, '')}`} className="hover:text-amil-red transition-colors">{hotelData.mobile}</a></span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Phone className="w-4 h-4 text-amil-red flex-shrink-0" />
+                      <span><strong>Grievance Redressal:</strong> <a href={`tel:${hotelData.grievance.replace(/[\s-]+/g, '')}`} className="hover:text-amil-red transition-colors">{hotelData.grievance}</a></span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <Mail className="w-4 h-4 text-amil-red flex-shrink-0" />
-                      <span><strong>Reservations:</strong> {hotelData.email}</span>
+                      <span><strong>Email:</strong> <a href={`mailto:${hotelData.email}`} className="hover:text-amil-red transition-colors">{hotelData.email}</a></span>
                     </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border-light/60 pt-5">
+                  <span className="text-[10px] font-sans font-semibold tracking-luxury uppercase text-amil-red block mb-2">
+                    GRIEVANCE REDRESSAL
+                  </span>
+                  <p className="text-[11px] font-sans text-text-muted font-light mb-2">
+                    For escalations, unresolved service feedback, or formal guest concerns:
+                  </p>
+                  <div className="flex items-center space-x-3 text-xs font-sans text-charcoal-text">
+                    <Phone className="w-4 h-4 text-amil-red flex-shrink-0" />
+                    <span><strong>Dedicated Line:</strong> <a href={`tel:${hotelData.grievance.replace(/[\s-]+/g, '')}`} className="hover:text-amil-red transition-colors">{hotelData.grievance}</a></span>
                   </div>
                 </div>
 

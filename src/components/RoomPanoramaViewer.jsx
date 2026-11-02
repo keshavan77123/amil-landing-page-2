@@ -6,43 +6,111 @@ import 'pannellum/build/pannellum.css';
 // Antique-gold accent colour (matches muted-gold design token)
 const GOLD = '#B08D57';
 
-export const RoomPanoramaViewer = ({ panorama }) => {
+export const RoomPanoramaViewer = ({ panorama, roomName = 'Room' }) => {
+  const wrapperRef = useRef(null);
   const containerRef = useRef(null);
+  const viewerRef = useRef(null);
+  const initializedRef = useRef(false);
+  const [isInView, setIsInView] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
+  // 1. Observe container entry into viewport (lazy initialization)
   useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect(); // Initialize only once
+        }
+      },
+      {
+        rootMargin: '200px 0px', // preload 200px before scrolling into view
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(wrapper);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // 2. Initialize Pannellum once when in view
+  useEffect(() => {
+    if (!isInView || !panorama) return;
     const container = containerRef.current;
-    if (!container || !panorama) return undefined;
+    if (!container) return;
+
+    // Strict single initialization guard
+    if (initializedRef.current) return;
 
     if (!window.pannellum) {
       setFailed(true);
-      return undefined;
+      setIsLoading(false);
+      return;
     }
 
-    const viewer = window.pannellum.viewer(container, {
-      type: 'equirectangular',
-      panorama,
-      autoLoad: true,
-      showControls: true,
-      showFullscreenCtrl: true,
-      showZoomCtrl: true,
-      mouseZoom: true,
-      hfov: 100,
-      minHfov: 50,
-      maxHfov: 120,
-      pitch: 0,
-      yaw: 0,
-    });
+    initializedRef.current = true;
 
-    viewer.on('error', () => setFailed(true));
+    try {
+      const viewer = window.pannellum.viewer(container, {
+        type: 'equirectangular',
+        panorama,
+        autoLoad: true,
+        showControls: true,
+        showFullscreenCtrl: true,
+        showZoomCtrl: true,
+        mouseZoom: true,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
+        pitch: 0,
+        yaw: 0,
+      });
+
+      viewerRef.current = viewer;
+
+      viewer.on('load', () => {
+        setIsLoading(false);
+      });
+
+      viewer.on('error', () => {
+        setFailed(true);
+        setIsLoading(false);
+      });
+    } catch (err) {
+      console.error('Failed to initialize Pannellum viewer:', err);
+      setFailed(true);
+      setIsLoading(false);
+    }
 
     return () => {
-      viewer.destroy();
+      if (viewerRef.current) {
+        try {
+          viewerRef.current.destroy();
+        } catch (e) {
+          // ignore cleanup errors
+        }
+        viewerRef.current = null;
+        initializedRef.current = false;
+      }
     };
-  }, [panorama]);
+  }, [isInView, panorama]);
 
   return (
     <div
+      ref={wrapperRef}
       className="amil-panorama relative overflow-hidden bg-charcoal select-none group w-full max-w-[1100px] mx-auto h-[240px] sm:h-[280px] lg:h-[320px]"
       style={{ borderTop: `1px solid ${GOLD}33`, borderBottom: `1px solid ${GOLD}33` }}
     >
@@ -62,6 +130,16 @@ export const RoomPanoramaViewer = ({ panorama }) => {
       {/* Ambient gradient vignette */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-charcoal/50 via-transparent to-charcoal/25" />
 
+      {/* Loading state indicator */}
+      {isLoading && !failed && (
+        <div className="absolute inset-0 z-15 flex flex-col items-center justify-center bg-charcoal/85 transition-opacity duration-300 pointer-events-none">
+          <div className="w-8 h-8 rounded-full border-2 border-muted-gold/25 border-t-muted-gold animate-spin mb-2" />
+          <span className="text-[10px] font-sans tracking-luxury uppercase text-muted-gold/90 font-medium">
+            Loading 360° Virtual Tour...
+          </span>
+        </div>
+      )}
+
       {/* ── Top-left: compact royal badge ── */}
       <div
         className="absolute top-3 left-3 z-20 flex items-center space-x-2 px-2.5 py-1 pointer-events-none"
@@ -79,7 +157,7 @@ export const RoomPanoramaViewer = ({ panorama }) => {
           className="text-[9px] font-sans font-semibold tracking-luxury uppercase"
           style={{ color: GOLD }}
         >
-          360° Room Tour
+          360° VIRTUAL TOUR
         </span>
       </div>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Award, ShieldCheck, Clock, MapPin } from 'lucide-react';
+import { ArrowRight, Sparkles, Award, ShieldCheck, Clock, MapPin, Bed, Utensils, Waves, ConciergeBell, Star } from 'lucide-react';
 import HeroCarousel from '../components/HeroCarousel';
 import RoomCard from '../components/RoomCard';
 import ScrollStrip from '../components/ScrollStrip';
@@ -11,7 +11,20 @@ import ScrollReveal from '../components/ScrollReveal';
 import HomeEventsSection from '../components/HomeEventsSection';
 import { roomsData } from '../data/rooms';
 import { amenitiesData } from '../data/amenities';
-import { nearbyAttractionsData } from '../data/nearby';
+import { nearbyDestinations } from '../data/nearbyDestinations';
+
+// Curated 5 approved destinations in exact required order for homepage showcase (Phase 2.7.2)
+const HOMEPAGE_DESTINATION_IDS = [
+  'tirumalai-srinivasa-perumal',
+  'ayyanar-kovil-falls',
+  'andal-rangamannar-temple',
+  'rakatachi-amman-kovil',
+  'nachadai-thavirtharuliya-nathar'
+];
+
+const homepageDestinations = HOMEPAGE_DESTINATION_IDS
+  .map((id) => nearbyDestinations.find((dest) => dest.id === id))
+  .filter(Boolean);
 
 export const Home = () => {
   return (
@@ -19,8 +32,131 @@ export const Home = () => {
       {/* 1. Homepage Hero (Pattern C Carousel) */}
       <HeroCarousel />
 
+      {/* 1. Mobile Discover Hotel Amil Introduction Section (Phone-only, completes the initial viewport) */}
+      <section className="sm:hidden px-2.5 min-[340px]:px-4 min-[360px]:px-5 pt-1 pb-6 min-[360px]:pb-8 text-center relative z-20 bg-ivory flex flex-col justify-start">
+        <div className="max-w-md mx-auto w-full">
+          {/* Section Heading with subtle burgundy decorative divider lines beside the heading */}
+          <div className="flex items-center justify-center space-x-1.5 min-[320px]:space-x-2 min-[360px]:space-x-2.5 mb-2.5">
+            <span className="inline-block w-2.5 min-[300px]:w-3.5 min-[340px]:w-4 min-[360px]:w-6 min-[390px]:w-7 h-[1px] bg-amil-red/40 shrink-0" aria-hidden="true" />
+            <h2 className="text-[13.5px] min-[300px]:text-[14.5px] min-[340px]:text-[16.5px] min-[375px]:text-[18px] min-[390px]:text-[18.5px] font-serif text-charcoal font-medium tracking-[0.05em] min-[320px]:tracking-[0.08em] min-[360px]:tracking-[0.12em] uppercase whitespace-nowrap">
+              DISCOVER HOTEL AMIL
+            </h2>
+            <span className="inline-block w-2.5 min-[300px]:w-3.5 min-[340px]:w-4 min-[360px]:w-6 min-[390px]:w-7 h-[1px] bg-amil-red/40 shrink-0" aria-hidden="true" />
+          </div>
+
+          {/* Section Description */}
+          <p className="text-xs min-[375px]:text-[12.5px] font-sans text-text-muted font-normal leading-relaxed max-w-[340px] mx-auto">
+            Experience comfort, convenience and warm hospitality at Hotel Amil, a 3-star hotel designed to make every stay memorable.
+          </p>
+
+          {/* 3-Star Hotel Classification Indicator */}
+          <div className="mt-5 flex flex-col items-center">
+            {/* Exactly three evenly spaced solid champagne-gold star icons */}
+            <div className="flex items-center justify-center space-x-1.5 mb-2">
+              <Star className="w-3.5 h-3.5 text-[#C89545] fill-[#C89545]" aria-hidden="true" />
+              <Star className="w-3.5 h-3.5 text-[#C89545] fill-[#C89545]" aria-hidden="true" />
+              <Star className="w-3.5 h-3.5 text-[#C89545] fill-[#C89545]" aria-hidden="true" />
+            </div>
+
+            {/* Deep Burgundy Uppercase Label */}
+            <span className="text-[11px] min-[360px]:text-[11.5px] font-sans font-semibold tracking-[0.15em] uppercase text-[#86151B]">
+              3-STAR HOTEL
+            </span>
+
+            {/* Subtle Decorative Divider with Centered Geometric Ornament */}
+            <div className="flex items-center justify-center space-x-2 mt-3.5 w-full max-w-[200px] min-[360px]:max-w-[220px]">
+              <span className="flex-1 h-[1px] bg-[#E8DEC8]" aria-hidden="true" />
+              <span className="w-1.5 h-1.5 rotate-45 bg-[#C89545]/70 shrink-0" aria-hidden="true" />
+              <span className="flex-1 h-[1px] bg-[#E8DEC8]" aria-hidden="true" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Mobile Our Facilities Section (Phone-only, next scrollable portion) */}
+      <section className="sm:hidden py-10 px-2.5 min-[340px]:px-4 min-[360px]:px-5 bg-ivory border-t border-[#E8DEC8]/60 relative z-20">
+        <div className="max-w-md mx-auto">
+          {/* Section Heading & Subtitle */}
+          <div className="text-center mb-6 min-[360px]:mb-7">
+            <div className="flex items-center justify-center space-x-1.5 min-[320px]:space-x-2 min-[360px]:space-x-2.5 mb-2">
+              <span className="inline-block w-2.5 min-[300px]:w-3.5 min-[340px]:w-4 min-[360px]:w-6 min-[390px]:w-7 h-[1px] bg-amil-red/40 shrink-0" aria-hidden="true" />
+              <h2 className="text-[14px] min-[300px]:text-[15px] min-[340px]:text-[16.5px] min-[360px]:text-[18px] min-[390px]:text-[19px] font-serif text-charcoal font-medium tracking-[0.08em] min-[360px]:tracking-[0.12em] uppercase whitespace-nowrap">
+                OUR FACILITIES
+              </h2>
+              <span className="inline-block w-2.5 min-[300px]:w-3.5 min-[340px]:w-4 min-[360px]:w-6 min-[390px]:w-7 h-[1px] bg-amil-red/40 shrink-0" aria-hidden="true" />
+            </div>
+            <p className="text-xs min-[375px]:text-[12.5px] font-sans text-text-muted font-normal leading-relaxed">
+              Everything You Need for a Comfortable Stay
+            </p>
+          </div>
+
+          {/* Facilities 2 × 2 Grid with Subtle Beige Dividers */}
+          <div className="grid grid-cols-2">
+            {/* Facility 1: Comfortable Accommodation */}
+            <div className="py-3.5 px-2 min-[360px]:py-4 min-[360px]:px-2.5 border-r border-b border-[#E8DEC8] flex flex-col items-center text-center">
+              <div className="w-11 h-11 min-[360px]:w-12 min-[360px]:h-12 rounded-full bg-[#F5EFEB] border border-[#E8DEC8] flex items-center justify-center mb-2.5 shadow-[0_2px_8px_rgba(26,24,21,0.04)] shrink-0">
+                <Bed className="w-5 h-5 text-amil-red stroke-[1.5]" />
+              </div>
+              <div className="min-h-[32px] min-[360px]:min-h-[36px] flex items-center justify-center mb-1.5">
+                <h3 className="text-charcoal font-serif font-medium tracking-[0.04em] min-[360px]:tracking-[0.06em] uppercase text-[11px] min-[360px]:text-[11.5px] min-[390px]:text-[12px] leading-tight">
+                  COMFORTABLE ACCOMMODATION
+                </h3>
+              </div>
+              <p className="text-text-muted font-sans font-normal text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] leading-relaxed max-w-[135px] min-[360px]:max-w-[145px]">
+                Relax in well-appointed rooms and executive suites.
+              </p>
+            </div>
+
+            {/* Facility 2: Restaurant & Dining */}
+            <div className="py-3.5 px-2 min-[360px]:py-4 min-[360px]:px-2.5 border-b border-[#E8DEC8] flex flex-col items-center text-center">
+              <div className="w-11 h-11 min-[360px]:w-12 min-[360px]:h-12 rounded-full bg-[#F5EFEB] border border-[#E8DEC8] flex items-center justify-center mb-2.5 shadow-[0_2px_8px_rgba(26,24,21,0.04)] shrink-0">
+                <Utensils className="w-5 h-5 text-amil-red stroke-[1.5]" />
+              </div>
+              <div className="min-h-[32px] min-[360px]:min-h-[36px] flex items-center justify-center mb-1.5">
+                <h3 className="text-charcoal font-serif font-medium tracking-[0.04em] min-[360px]:tracking-[0.06em] uppercase text-[11px] min-[360px]:text-[11.5px] min-[390px]:text-[12px] leading-tight">
+                  RESTAURANT & DINING
+                </h3>
+              </div>
+              <p className="text-text-muted font-sans font-normal text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] leading-relaxed max-w-[135px] min-[360px]:max-w-[145px]">
+                Enjoy delightful dining experiences in an elegant setting.
+              </p>
+            </div>
+
+            {/* Facility 3: Swimming Pool */}
+            <div className="py-3.5 px-2 min-[360px]:py-4 min-[360px]:px-2.5 border-r border-b border-[#E8DEC8] flex flex-col items-center text-center">
+              <div className="w-11 h-11 min-[360px]:w-12 min-[360px]:h-12 rounded-full bg-[#F5EFEB] border border-[#E8DEC8] flex items-center justify-center mb-2.5 shadow-[0_2px_8px_rgba(26,24,21,0.04)] shrink-0">
+                <Waves className="w-5 h-5 text-amil-red stroke-[1.5]" />
+              </div>
+              <div className="min-h-[32px] min-[360px]:min-h-[36px] flex items-center justify-center mb-1.5">
+                <h3 className="text-charcoal font-serif font-medium tracking-[0.04em] min-[360px]:tracking-[0.06em] uppercase text-[11px] min-[360px]:text-[11.5px] min-[390px]:text-[12px] leading-tight">
+                  SWIMMING POOL
+                </h3>
+              </div>
+              <p className="text-text-muted font-sans font-normal text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] leading-relaxed max-w-[135px] min-[360px]:max-w-[145px]">
+                Unwind and refresh with our swimming pool facilities.
+              </p>
+            </div>
+
+            {/* Facility 4: 3-Star Hospitality */}
+            <div className="py-3.5 px-2 min-[360px]:py-4 min-[360px]:px-2.5 flex flex-col items-center text-center">
+              <div className="w-11 h-11 min-[360px]:w-12 min-[360px]:h-12 rounded-full bg-[#F5EFEB] border border-[#E8DEC8] flex items-center justify-center mb-2.5 shadow-[0_2px_8px_rgba(26,24,21,0.04)] shrink-0">
+                <ConciergeBell className="w-5 h-5 text-amil-red stroke-[1.5]" />
+              </div>
+              <div className="min-h-[32px] min-[360px]:min-h-[36px] flex items-center justify-center mb-1.5">
+                <h3 className="text-charcoal font-serif font-medium tracking-[0.04em] min-[360px]:tracking-[0.06em] uppercase text-[11px] min-[360px]:text-[11.5px] min-[390px]:text-[12px] leading-tight">
+                  3-STAR HOSPITALITY
+                </h3>
+              </div>
+              <p className="text-text-muted font-sans font-normal text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] leading-relaxed max-w-[135px] min-[360px]:max-w-[145px]">
+                Quality service and warm hospitality for a memorable stay.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 1b. Hotel Amil Entrance Section (Text Left | Image Right) */}
-      <section className="py-20 md:py-24 bg-warm-white border-y border-border-light/60">
+      <section className="pt-10 pb-16 sm:py-20 md:py-24 bg-warm-white border-y border-border-light/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Text Left */}
@@ -203,9 +339,9 @@ export const Home = () => {
         </ScrollReveal>
 
         {/* Pattern A: Grid of 4 room cards with hover zoom */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 items-stretch">
           {roomsData.map((room, idx) => (
-            <ScrollReveal key={room.id} delay={idx * 0.1} yOffset={30}>
+            <ScrollReveal key={room.id} delay={idx * 0.1} yOffset={30} className="h-full flex flex-col">
               <RoomCard room={room} />
             </ScrollReveal>
           ))}
@@ -297,7 +433,7 @@ export const Home = () => {
                     Explore Saffron Restaurant
                   </Button>
                 </Link>
-                <a href="tel:+914563222333">
+                <a href="tel:+914563233600">
                   <Button variant="secondary" size="md">
                     Reserve Table
                   </Button>
@@ -369,14 +505,14 @@ export const Home = () => {
       {/* 8. Celebrations at Hotel Amil (Events Showcase) */}
       <HomeEventsSection />
 
-      {/* 7. Nearby Attractions (Pattern D: Horizontal Scrollable Strip with Round Arrows) */}
+      {/* 9. Nearby Attractions (Pattern D: Horizontal Scrollable Strip with Round Arrows) */}
       <section className="py-20 md:py-28 bg-warm-white border-t border-border-light/60">
         <ScrollStrip
           eyebrow="REGIONAL DISCOVERY"
           title="Popular Destinations Around Rajapalayam"
         >
-          {nearbyAttractionsData.map((item) => (
-            <Link key={item.id} to="/nearby">
+          {homepageDestinations.map((item) => (
+            <Link key={item.id} to={`/nearby#${item.id}`} className="flex-shrink-0 flex flex-col h-full">
               <NearbyCard item={item} isStrip={true} />
             </Link>
           ))}
@@ -389,7 +525,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 8. Editorial Closing Statement */}
+      {/* 10. Editorial Closing Statement */}
       <section className="py-20 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal yOffset={20}>
           <img

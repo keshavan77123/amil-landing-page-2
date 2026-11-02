@@ -7,28 +7,28 @@ import { Button } from './ui/Button';
 const eventCategories = [
   {
     number: '01',
-    title: 'Candlelight Dining',
+    title: 'Candlelight Dining & Intimate Occasions',
     description:
-      'Create a memorable evening with an intimate dining experience, thoughtful presentation, and warm hospitality.',
-    image: '/images/events/RestaurentTable_8k.png',
-    alt: 'Candlelight dining experience at Hotel Amil',
-    link: '/events#romantic-section',
+      'Create a memorable evening with private candlelight dining, 4-course curated menus, and personalized hospitality.',
+    image: '/images/events/event-couple.jpg',
+    alt: 'Intimate candlelight dining experience at Hotel Amil',
+    link: '/events#couple-section',
   },
   {
     number: '02',
-    title: 'Family Celebrations',
+    title: 'Baby Showers & Family Milestones',
     description:
-      'Bring your loved ones together for birthdays, anniversaries, reunions, and other meaningful milestones.',
+      'Celebrate auspicious Valaikappu, Seemantham rituals, and family gatherings in an inviting, beautifully decorated setting.',
     image: '/images/events/EventBabyShower2_8k.png',
-    alt: 'Family celebration and milestone gathering at Hotel Amil',
-    link: '/events#birthday-section',
+    alt: 'Family celebration and traditional baby shower gathering at Hotel Amil',
+    link: '/events#baby-shower-section',
   },
   {
     number: '03',
-    title: 'Banquets & Special Occasions',
+    title: 'Wedding Receptions & Grand Banquets',
     description:
-      'Discover an elegant setting for gatherings, celebrations, and special events, supported by attentive hospitality.',
-    image: '/images/events/BanquetHall3_8k.png',
+      'Discover an elegant setting for weddings, receptions, and large gatherings supported by traditional feast catering.',
+    image: '/images/events/Weeding/BanquetHall3_8k.png',
     alt: 'Grand banquet and wedding reception at Hotel Amil',
     link: '/events#wedding-section',
   },
@@ -44,7 +44,7 @@ export const HomeEventsSection = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
         style={{
-          backgroundImage: `url('/images/amenities/banquetHall-8k.png')`,
+          backgroundImage: `url('/images/events/EventsBirthDay3_8k.png')`,
         }}
       />
 
@@ -75,18 +75,18 @@ export const HomeEventsSection = () => {
 
               {/* Supporting Description */}
               <p className="text-xs sm:text-sm lg:text-base font-sans text-ivory/80 font-light leading-relaxed mb-8 max-w-lg">
-                From intimate candlelight dinners to joyful family celebrations and grand occasions, Hotel Amil provides an inviting setting for the moments you want to remember.
+                From intimate candlelight dinners to joyful family celebrations, wedding receptions, and corporate conferences, Hotel Amil provides an inviting setting for the moments you want to remember.
               </p>
 
               {/* Burgundy Amil Red CTA Button */}
-              <Link to="/events#event-enquiry" className="inline-block">
+              <Link to="/events" className="inline-block">
                 <Button
                   variant="primary"
                   size="lg"
                   className="group !px-7 !py-4 shadow-soft-luxury hover:shadow-elevated transition-all duration-300 flex items-center gap-2.5"
                 >
                   <span className="tracking-luxury font-medium text-xs sm:text-sm">
-                    PLAN YOUR EVENT
+                    EXPLORE ALL EVENTS & BANQUETS
                   </span>
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 flex-shrink-0" />
                 </Button>

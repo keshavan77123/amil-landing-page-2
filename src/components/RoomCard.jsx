@@ -9,13 +9,13 @@ export const RoomCard = ({ room }) => {
   const previewImage = room.images && room.images.length > 0 ? room.images[0] : '/images/rooms/executive/executive-1.svg';
 
   return (
-    <div className="group flex flex-col bg-warm-white border border-border-light/70 hover:border-amil-red/40 transition-all duration-500 overflow-hidden">
+    <div className="group flex flex-col h-full bg-warm-white border border-border-light/70 hover:border-amil-red/40 transition-all duration-500 overflow-hidden">
       {/* Pattern A: Large Image with subtle hover zoom */}
-      <Link to={`/rooms/${room.id}`} className="relative block aspect-[16/10] overflow-hidden bg-charcoal/5">
+      <Link to={`/rooms/${room.id}`} className="relative block aspect-[16/10] w-full overflow-hidden bg-charcoal/5 flex-shrink-0">
         <img
           src={previewImage}
           alt={room.name}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         />
         
         {/* Subtle top category tag */}
@@ -31,34 +31,38 @@ export const RoomCard = ({ room }) => {
       </Link>
 
       {/* Pattern A: Minimal Text Below */}
-      <div className="p-6 sm:p-7 flex flex-col flex-grow justify-between">
-        <div>
-          {/* Room Name */}
-          <Link to={`/rooms/${room.id}`}>
-            <h3 className="text-xl font-serif text-charcoal group-hover:text-amil-red transition-colors mb-2">
-              {room.name}
-            </h3>
+      <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between">
+        <div className="flex-1 flex flex-col">
+          {/* Room Name with consistent title slot */}
+          <Link to={`/rooms/${room.id}`} className="block">
+            <div className="h-[56px] min-h-[56px] mb-2 flex items-start">
+              <h3 className="text-xl font-serif text-charcoal group-hover:text-amil-red transition-colors line-clamp-2 leading-snug">
+                {room.name}
+              </h3>
+            </div>
           </Link>
 
-          {/* Description */}
-          <p className="text-xs font-sans text-text-muted leading-relaxed mb-4 line-clamp-2">
-            {room.shortDescription}
-          </p>
+          {/* Description with consistent description slot */}
+          <div className="h-[40px] min-h-[40px] mb-4">
+            <p className="text-xs font-sans text-text-muted leading-relaxed line-clamp-2">
+              {room.shortDescription}
+            </p>
+          </div>
 
-          {/* Meta Specifications */}
-          <div className="flex items-center space-x-4 text-[11px] text-text-muted border-t border-border-light/40 pt-3 mb-4">
-            <div className="flex items-center space-x-1.5">
+          {/* Meta Specifications with consistent meta slot */}
+          <div className="min-h-[38px] flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-muted border-t border-border-light/40 pt-3 mb-4">
+            <div className="flex items-center space-x-1.5 flex-shrink-0">
               <Users className="w-3.5 h-3.5 text-amil-red" />
               <span>Up to {room.maxOccupancy} Guests</span>
             </div>
             <div className="flex items-center space-x-1.5">
               <Bed className="w-3.5 h-3.5 text-amil-red" />
-              <span>{room.bedType}</span>
+              <span className="truncate">{room.bedType}</span>
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="mt-auto pt-2">
           {/* Starting Tariff */}
           <div className="flex items-baseline justify-between mb-5">
             <div>

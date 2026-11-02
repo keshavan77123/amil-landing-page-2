@@ -142,7 +142,7 @@ export const RoomSpin360Viewer = ({ images = [] }) => {
           <img
             src={activeImageSrc}
             alt={`360 Room View — Frame ${currentFrame + 1} of ${totalFrames}`}
-            className="w-full h-full object-cover pointer-events-none transition-none"
+            className="w-full h-full object-contain pointer-events-none transition-none"
             draggable="false"
           />
         )}
@@ -168,7 +168,7 @@ export const RoomSpin360Viewer = ({ images = [] }) => {
           className="text-[9px] font-sans font-semibold tracking-luxury uppercase"
           style={{ color: GOLD }}
         >
-          360° Room Tour
+          360° VIRTUAL TOUR
         </span>
       </div>
 

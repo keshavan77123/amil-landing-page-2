@@ -366,164 +366,189 @@ export const HeroBookingBar = () => {
   const isGuestsActive = activeField === 'guests' || popoverOpen;
 
   return (
-    <div className="absolute bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6 xl:bottom-8 left-1/2 -translate-x-1/2 w-[92%] sm:w-[88%] max-w-2xl lg:max-w-[685px] xl:max-w-[748px] z-30 flex justify-center">
-      {/* Outer Card: Transparent Glassmorphism Default State + Proportionally Reduced Proportions */}
+    <div className="relative -mt-[40px] mb-5 min-[360px]:mb-6 px-1 min-[340px]:px-2 min-[360px]:px-3 sm:px-0 sm:mt-0 sm:mb-0 sm:absolute sm:bottom-4 md:bottom-5 lg:bottom-6 xl:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-[96%] min-[360px]:w-[94%] sm:w-[88%] max-w-md sm:max-w-2xl lg:max-w-[685px] xl:max-w-[748px] z-30 flex justify-center mx-auto shrink-0">
+      {/* Outer Card: High-contrast luxury charcoal in normal document flow on phones, floating glassmorphism on tablet & desktop */}
       <div
         ref={barContainerRef}
-        className="w-full bg-charcoal/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-[0_16px_45px_rgba(0,0,0,0.35)] pl-3 pr-1.5 py-1.5 lg:pl-4 lg:pr-1.5 lg:py-1 transition-all duration-300"
+        id="hero-booking-card"
+        className="w-full bg-[#FAF7F2] sm:bg-charcoal/40 backdrop-blur-md border border-[#E8DEC8] sm:border-white/20 rounded-2xl shadow-[0_12px_36px_rgba(26,24,21,0.12)] sm:shadow-[0_16px_45px_rgba(0,0,0,0.35)] p-1.5 min-[340px]:p-2 sm:pl-3 sm:pr-1.5 sm:py-1.5 lg:pl-4 lg:pr-1.5 lg:py-1 transition-all duration-300"
       >
         <div className="flex flex-col lg:flex-row lg:items-center">
-          {/* FIELD 1: CHECK-IN */}
-          <div
-            className={`relative flex-1 group px-3 py-1.5 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 ${
-              isCheckInActive
-                ? 'bg-[#FAF7F2] shadow-md border border-[#E8DEC8]/90'
-                : 'bg-transparent hover:bg-white/10 border border-transparent'
-            }`}
-            onClick={() => {
-              setActiveField('checkIn');
-              try {
-                checkInInputRef.current?.showPicker();
-              } catch {
-                checkInInputRef.current?.focus();
-              }
-            }}
-          >
-            {/* Native date input overlaying the cell for full accessibility */}
-            <input
-              ref={checkInInputRef}
-              id="hero-checkin"
-              type="date"
-              value={checkIn}
-              min={today}
-              onFocus={() => setActiveField('checkIn')}
-              onChange={handleCheckInChange}
-              aria-label="Check-in Date"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-            />
-            <div className="flex items-center space-x-2 pointer-events-none">
-              <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
-                  isCheckInActive
-                    ? 'bg-warm-white border border-border-light/80 text-amil-red'
-                    : 'bg-black/30 border border-white/20 text-muted-gold group-hover:border-muted-gold/60'
-                }`}
-              >
-                <Calendar className="w-3 h-3" />
+          {/* ROW 1 (Phone: Side-by-Side Check-In & Check-Out | Tablet & Desktop: Preserved Flow) */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center sm:contents">
+            {/* FIELD 1: CHECK-IN */}
+            <div
+              className={`relative flex-1 group px-1.5 min-[340px]:px-2.5 py-1.5 sm:px-3 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 ${
+                isCheckInActive
+                  ? 'bg-white/90 sm:bg-[#FAF7F2] shadow-sm sm:shadow-md border border-[#E8DEC8]'
+                  : 'bg-transparent hover:bg-black/[0.03] sm:hover:bg-white/10 border border-transparent'
+              }`}
+              onClick={() => {
+                setActiveField('checkIn');
+                try {
+                  checkInInputRef.current?.showPicker();
+                } catch {
+                  checkInInputRef.current?.focus();
+                }
+              }}
+            >
+              {/* Native date input overlaying the cell for full accessibility */}
+              <input
+                ref={checkInInputRef}
+                id="hero-checkin"
+                type="date"
+                value={checkIn}
+                min={today}
+                onFocus={() => setActiveField('checkIn')}
+                onChange={handleCheckInChange}
+                aria-label="Check-in Date"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+              <div className="flex items-center space-x-1 min-[340px]:space-x-1.5 sm:space-x-2 pointer-events-none">
+                <div
+                  className={`w-4 h-4 min-[340px]:w-5 min-[340px]:h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                    isCheckInActive
+                      ? 'text-amil-red sm:bg-warm-white sm:border sm:border-border-light/80'
+                      : 'text-amil-red sm:text-muted-gold sm:bg-black/30 sm:border sm:border-white/20 group-hover:border-muted-gold/60'
+                  }`}
+                >
+                  <Calendar className="w-3.5 h-3.5 min-[340px]:w-4 min-[340px]:h-4 sm:w-3 sm:h-3" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span
+                    className={`block text-[8.5px] min-[340px]:text-[9px] font-sans font-semibold tracking-[0.08em] min-[340px]:tracking-luxury uppercase transition-colors ${
+                      isCheckInActive ? 'text-amil-red' : 'text-amil-red sm:text-ivory/80'
+                    }`}
+                  >
+                    CHECK-IN
+                  </span>
+                  <span
+                    className={`block text-[12.5px] min-[320px]:text-[13px] min-[340px]:text-[14px] sm:text-[13.5px] lg:text-[14.5px] font-serif font-medium leading-tight tracking-tight whitespace-nowrap transition-colors ${
+                      isCheckInActive ? 'text-charcoal' : 'text-charcoal sm:text-ivory'
+                    }`}
+                  >
+                    {checkInDisplay.dayMonth}
+                  </span>
+                  <span
+                    className={`block text-[8.5px] min-[340px]:text-[9.5px] sm:text-[10px] font-sans leading-tight truncate transition-colors ${
+                      isCheckInActive ? 'text-text-muted' : 'text-text-muted sm:text-ivory/70'
+                    }`}
+                  >
+                    {checkInDisplay.weekdayYear}
+                  </span>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <span
-                  className={`block text-[9px] font-sans font-semibold tracking-luxury uppercase transition-colors ${
-                    isCheckInActive ? 'text-amil-red' : 'text-ivory/80'
+            </div>
+
+            {/* Separator between Check-In & Check-Out */}
+            {/* Phone: Vertical hairline between side-by-side columns */}
+            <div
+              className={`w-[1px] h-7 my-auto sm:hidden transition-opacity duration-300 ${
+                isCheckInActive || isCheckOutActive ? 'opacity-0' : 'bg-[#E8DEC8]'
+              }`}
+              aria-hidden="true"
+            />
+            {/* Tablet: Horizontal hairline */}
+            <div
+              className={`hidden sm:block lg:hidden h-[1px] w-full transition-opacity duration-300 my-1 ${
+                isCheckInActive || isCheckOutActive ? 'opacity-0' : 'bg-white/15'
+              }`}
+              aria-hidden="true"
+            />
+            {/* Desktop: Vertical hairline */}
+            <div
+              className={`hidden lg:block w-[1px] h-6 my-auto transition-opacity duration-300 ${
+                isCheckInActive || isCheckOutActive ? 'opacity-0' : 'bg-white/25'
+              }`}
+              aria-hidden="true"
+            />
+
+            {/* FIELD 2: CHECK-OUT */}
+            <div
+              className={`relative flex-1 group px-1.5 min-[340px]:px-2.5 py-1.5 sm:px-3 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 ${
+                isCheckOutActive
+                  ? 'bg-white/90 sm:bg-[#FAF7F2] shadow-sm sm:shadow-md border border-[#E8DEC8]'
+                  : 'bg-transparent hover:bg-black/[0.03] sm:hover:bg-white/10 border border-transparent'
+              }`}
+              onClick={() => {
+                setActiveField('checkOut');
+                try {
+                  checkOutInputRef.current?.showPicker();
+                } catch {
+                  checkOutInputRef.current?.focus();
+                }
+              }}
+            >
+              {/* Native date input overlaying the cell for full accessibility */}
+              <input
+                ref={checkOutInputRef}
+                id="hero-checkout"
+                type="date"
+                value={checkOut}
+                min={getMinCheckOut()}
+                onFocus={() => setActiveField('checkOut')}
+                onChange={handleCheckOutChange}
+                aria-label="Check-out Date"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+              <div className="flex items-center space-x-1 min-[340px]:space-x-1.5 sm:space-x-2 pointer-events-none">
+                <div
+                  className={`w-4 h-4 min-[340px]:w-5 min-[340px]:h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                    isCheckOutActive
+                      ? 'text-amil-red sm:bg-warm-white sm:border sm:border-border-light/80'
+                      : 'text-amil-red sm:text-muted-gold sm:bg-black/30 sm:border sm:border-white/20 group-hover:border-muted-gold/60'
                   }`}
                 >
-                  CHECK-IN
-                </span>
-                <span
-                  className={`block text-[13.5px] lg:text-[14.5px] font-serif font-medium leading-tight tracking-tight transition-colors ${
-                    isCheckInActive ? 'text-charcoal' : 'text-ivory'
-                  }`}
-                >
-                  {checkInDisplay.dayMonth}
-                </span>
-                <span
-                  className={`block text-[10px] font-sans leading-tight transition-colors ${
-                    isCheckInActive ? 'text-text-muted' : 'text-ivory/70'
-                  }`}
-                >
-                  {checkInDisplay.weekdayYear}
-                </span>
+                  <Calendar className="w-3.5 h-3.5 min-[340px]:w-4 min-[340px]:h-4 sm:w-3 sm:h-3" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span
+                    className={`block text-[8.5px] min-[340px]:text-[9px] font-sans font-semibold tracking-[0.08em] min-[340px]:tracking-luxury uppercase transition-colors ${
+                      isCheckOutActive ? 'text-amil-red' : 'text-amil-red sm:text-ivory/80'
+                    }`}
+                  >
+                    CHECK-OUT
+                  </span>
+                  <span
+                    className={`block text-[12.5px] min-[320px]:text-[13px] min-[340px]:text-[14px] sm:text-[13.5px] lg:text-[14.5px] font-serif font-medium leading-tight tracking-tight whitespace-nowrap transition-colors ${
+                      isCheckOutActive ? 'text-charcoal' : 'text-charcoal sm:text-ivory'
+                    }`}
+                  >
+                    {checkOutDisplay.dayMonth}
+                  </span>
+                  <span
+                    className={`block text-[8.5px] min-[340px]:text-[9.5px] sm:text-[10px] font-sans leading-tight truncate transition-colors ${
+                      isCheckOutActive ? 'text-text-muted' : 'text-text-muted sm:text-ivory/70'
+                    }`}
+                  >
+                    {checkOutDisplay.weekdayYear}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Separator 1 (Desktop vertical hairline / Mobile horizontal hairline) */}
-          <div
-            className={`hidden lg:block w-[1px] h-6 my-auto transition-opacity duration-300 ${
-              isCheckInActive || isCheckOutActive ? 'opacity-0' : 'bg-white/25'
-            }`}
-          />
-          <div className="lg:hidden h-[1px] w-full bg-white/15 my-1" />
-
-          {/* FIELD 2: CHECK-OUT */}
-          <div
-            className={`relative flex-1 group px-3 py-1.5 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 ${
-              isCheckOutActive
-                ? 'bg-[#FAF7F2] shadow-md border border-[#E8DEC8]/90'
-                : 'bg-transparent hover:bg-white/10 border border-transparent'
-            }`}
-            onClick={() => {
-              setActiveField('checkOut');
-              try {
-                checkOutInputRef.current?.showPicker();
-              } catch {
-                checkOutInputRef.current?.focus();
-              }
-            }}
-          >
-            {/* Native date input overlaying the cell for full accessibility */}
-            <input
-              ref={checkOutInputRef}
-              id="hero-checkout"
-              type="date"
-              value={checkOut}
-              min={getMinCheckOut()}
-              onFocus={() => setActiveField('checkOut')}
-              onChange={handleCheckOutChange}
-              aria-label="Check-out Date"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-            />
-            <div className="flex items-center space-x-2 pointer-events-none">
-              <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
-                  isCheckOutActive
-                    ? 'bg-warm-white border border-border-light/80 text-amil-red'
-                    : 'bg-black/30 border border-white/20 text-muted-gold group-hover:border-muted-gold/60'
-                }`}
-              >
-                <Calendar className="w-3 h-3" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <span
-                  className={`block text-[9px] font-sans font-semibold tracking-luxury uppercase transition-colors ${
-                    isCheckOutActive ? 'text-amil-red' : 'text-ivory/80'
-                  }`}
-                >
-                  CHECK-OUT
-                </span>
-                <span
-                  className={`block text-[13.5px] lg:text-[14.5px] font-serif font-medium leading-tight tracking-tight transition-colors ${
-                    isCheckOutActive ? 'text-charcoal' : 'text-ivory'
-                  }`}
-                >
-                  {checkOutDisplay.dayMonth}
-                </span>
-                <span
-                  className={`block text-[10px] font-sans leading-tight transition-colors ${
-                    isCheckOutActive ? 'text-text-muted' : 'text-ivory/70'
-                  }`}
-                >
-                  {checkOutDisplay.weekdayYear}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Separator 2 (Desktop vertical hairline / Mobile horizontal hairline) */}
+          {/* Separator 2 (Desktop vertical hairline / Mobile & Tablet horizontal hairline) */}
           <div
             className={`hidden lg:block w-[1px] h-6 my-auto transition-opacity duration-300 ${
               isCheckOutActive || isGuestsActive ? 'opacity-0' : 'bg-white/25'
             }`}
+            aria-hidden="true"
           />
-          <div className="lg:hidden h-[1px] w-full bg-white/15 my-1" />
+          <div
+            className={`lg:hidden h-[1px] w-full transition-opacity duration-300 my-1 ${
+              isCheckOutActive || isGuestsActive ? 'opacity-0' : 'bg-[#E8DEC8] sm:bg-white/15'
+            }`}
+            aria-hidden="true"
+          />
 
-          {/* FIELD 3: GUESTS & ROOMS */}
+          {/* ROW 2 (Phone: Full-width Guests & Rooms | Tablet & Desktop: Preserved) */}
           <div
             ref={guestsTriggerRef}
-            className={`relative flex-1 group px-3 py-1.5 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 focus:outline-none ${
+            className={`relative flex-1 group px-2 min-[340px]:px-3 py-1.5 lg:px-2.5 lg:py-1 rounded-xl cursor-pointer transition-all duration-300 focus:outline-none ${
               isGuestsActive
-                ? 'bg-[#FAF7F2] shadow-md border border-[#E8DEC8]/90'
-                : 'bg-transparent hover:bg-white/10 border border-transparent'
+                ? 'bg-white/90 sm:bg-[#FAF7F2] shadow-sm sm:shadow-md border border-[#E8DEC8]'
+                : 'bg-transparent hover:bg-black/[0.03] sm:hover:bg-white/10 border border-transparent'
             }`}
             onClick={() => {
               const nextOpen = !popoverOpen;
@@ -544,59 +569,65 @@ export const HeroBookingBar = () => {
             aria-expanded={popoverOpen}
             aria-label="Select guests and rooms"
           >
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 min-[340px]:space-x-2">
               <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
+                className={`w-4 h-4 min-[340px]:w-5 min-[340px]:h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center shrink-0 transition-colors ${
                   isGuestsActive
-                    ? 'bg-warm-white border border-border-light/80 text-amil-red'
-                    : 'bg-black/30 border border-white/20 text-muted-gold group-hover:border-muted-gold/60'
+                    ? 'text-amil-red sm:bg-warm-white sm:border sm:border-border-light/80'
+                    : 'text-amil-red sm:text-muted-gold sm:bg-black/30 sm:border sm:border-white/20 group-hover:border-muted-gold/60'
                 }`}
               >
-                <Users className="w-3 h-3" />
+                <Users className="w-3.5 h-3.5 min-[340px]:w-4 min-[340px]:h-4 sm:w-3 sm:h-3" />
               </div>
               <div className="flex-1 min-w-0">
                 <span
-                  className={`block text-[9px] font-sans font-semibold tracking-luxury uppercase transition-colors ${
-                    isGuestsActive ? 'text-amil-red' : 'text-ivory/80'
+                  className={`block text-[8.5px] min-[340px]:text-[9px] font-sans font-semibold tracking-[0.08em] min-[340px]:tracking-luxury uppercase transition-colors ${
+                    isGuestsActive ? 'text-amil-red' : 'text-amil-red sm:text-ivory/80'
                   }`}
                 >
                   GUESTS
                 </span>
                 <span
-                  className={`block text-xs lg:text-[12.5px] font-serif font-medium leading-tight truncate transition-colors ${
-                    isGuestsActive ? 'text-charcoal' : 'text-ivory'
+                  className={`block text-[11px] min-[340px]:text-xs lg:text-[12.5px] font-serif font-medium leading-tight truncate transition-colors ${
+                    isGuestsActive ? 'text-charcoal' : 'text-charcoal sm:text-ivory'
                   }`}
                 >
                   {guestData.adults} {guestData.adults === 1 ? 'Adult' : 'Adults'} · {guestData.children} {guestData.children === 1 ? 'Child' : 'Children'}
                 </span>
                 <span
-                  className={`block text-[10px] font-sans leading-tight transition-colors ${
-                    isGuestsActive ? 'text-text-muted' : 'text-ivory/70'
+                  className={`block text-[9px] min-[340px]:text-[10px] font-sans leading-tight transition-colors ${
+                    isGuestsActive ? 'text-text-muted' : 'text-text-muted sm:text-ivory/70'
                   }`}
                 >
                   {guestData.rooms} {guestData.rooms === 1 ? 'Room' : 'Rooms'}
                 </span>
               </div>
               <ChevronDown
-                className={`w-3 h-3 transition-transform duration-300 flex-shrink-0 ${
-                  isGuestsActive ? 'rotate-180 text-amil-red' : 'text-ivory/70 group-hover:text-ivory'
+                className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ${
+                  isGuestsActive ? 'rotate-180 text-amil-red' : 'text-amil-red/80 sm:text-ivory/70 group-hover:text-amil-red sm:group-hover:text-ivory'
                 }`}
               />
             </div>
           </div>
 
-          {/* Separator 3 for Mobile */}
-          <div className="lg:hidden h-[1px] w-full bg-white/15 my-1" />
+          {/* Separator 3 for Tablet only */}
+          <div
+            className={`hidden sm:block lg:hidden h-[1px] w-full transition-opacity duration-300 my-1 ${
+              isGuestsActive ? 'opacity-0' : 'bg-white/15'
+            }`}
+            aria-hidden="true"
+          />
 
-          {/* FIELD 4: CHECK RATES / BOOK ACTION BUTTON */}
+          {/* ROW 3 (Phone: Full-width CHECK RATES Button | Tablet: Full-width | Desktop: Inline) */}
           <div className="p-0.5 lg:pl-1.5 shrink-0">
             <button
+              id="hero-check-rates-btn"
               type="button"
               onClick={handleBookNow}
-              className="w-full lg:w-auto px-5 py-2.5 lg:px-5 lg:py-3 bg-amil-red hover:bg-amil-red-dark text-ivory font-sans font-semibold uppercase text-[11px] lg:text-xs tracking-luxury rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1.5 active:scale-[0.98] group focus:outline-none focus:ring-2 focus:ring-amil-red focus:ring-offset-2"
+              className="w-full lg:w-auto px-3 min-[340px]:px-5 py-2.5 min-[340px]:py-3 bg-[#7B1113] hover:bg-[#660C0E] sm:bg-amil-red sm:hover:bg-amil-red-dark text-white font-sans font-semibold uppercase text-[10.5px] min-[340px]:text-[11px] lg:text-xs tracking-[0.1em] min-[340px]:tracking-luxury rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1.5 active:scale-[0.98] group focus:outline-none focus:ring-2 focus:ring-amil-red focus:ring-offset-2"
             >
               <span className="whitespace-nowrap">CHECK RATES</span>
-              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 text-white" />
             </button>
           </div>
         </div>

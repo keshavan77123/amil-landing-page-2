@@ -119,7 +119,9 @@ export const Footer = () => {
               </div>
               <div className="flex items-center space-x-2.5">
                 <Mail className="w-4 h-4 text-amil-red flex-shrink-0" />
-                <span>{hotelData.email}</span>
+                <a href={`mailto:${hotelData.email}`} className="hover:text-ivory transition-colors">
+                  {hotelData.email}
+                </a>
               </div>
             </div>
           </div>
@@ -173,6 +175,9 @@ export const Footer = () => {
           <div className="mt-4 sm:mt-0 flex items-center space-x-6">
             <Link to="/policy" className="hover:text-ivory transition-colors">
               Privacy & Policies
+            </Link>
+            <Link to="/policy#grievance-redressal" className="hover:text-ivory transition-colors">
+              Grievance Redressal
             </Link>
             <button
               type="button"

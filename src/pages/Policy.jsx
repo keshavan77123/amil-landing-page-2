@@ -2,7 +2,7 @@ import React from 'react';
 import SectionHeading from '../components/ui/SectionHeading';
 import ScrollReveal from '../components/ScrollReveal';
 import { hotelData } from '../data/hotel';
-import { ShieldCheck, Clock, Coffee, AlertCircle, Ban, GlassWater } from 'lucide-react';
+import { ShieldCheck, Clock, Coffee, AlertCircle, Ban, GlassWater, ShieldAlert } from 'lucide-react';
 
 const policyIcons = {
   'check-in-out': Clock,
@@ -11,6 +11,52 @@ const policyIcons = {
   'pets': Ban,
   'visitors': AlertCircle,
   'liquor': GlassWater,
+  'grievance-redressal': ShieldAlert,
+};
+
+const renderPolicyDetail = (detail) => {
+  if (typeof detail !== 'string') return detail;
+
+  const regex = /(\+91-8111007108|\+91\s4563\s233600|Info@hotelamil\.com)/gi;
+  if (!regex.test(detail)) return detail;
+
+  const parts = detail.split(regex);
+  return parts.map((part, index) => {
+    if (part === '+91-8111007108') {
+      return (
+        <a
+          key={index}
+          href={`tel:${hotelData.grievance.replace(/[\s-]+/g, '')}`}
+          className="text-amil-red font-medium hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    if (part === '+91 4563 233600') {
+      return (
+        <a
+          key={index}
+          href={`tel:${hotelData.phone.replace(/\s+/g, '')}`}
+          className="text-amil-red font-medium hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    if (part.toLowerCase() === 'info@hotelamil.com') {
+      return (
+        <a
+          key={index}
+          href={`mailto:${hotelData.email}`}
+          className="text-amil-red font-medium hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
 };
 
 export const Policy = () => {
@@ -32,7 +78,7 @@ export const Policy = () => {
             const Icon = policyIcons[policy.id] || ShieldCheck;
             return (
               <ScrollReveal key={policy.id} delay={idx * 0.08} yOffset={20}>
-                <div className="py-8 first:pt-0 last:pb-0">
+                <div id={policy.id} className="py-8 first:pt-0 last:pb-0 scroll-mt-28">
                   <div className="flex items-start space-x-4 mb-3">
                     <div className="p-2.5 bg-ivory border border-border-light/80 text-amil-red flex-shrink-0 mt-0.5">
                       <Icon className="w-5 h-5" />
@@ -55,7 +101,7 @@ export const Policy = () => {
                     {policy.details.map((detail, i) => (
                       <li key={i} className="flex items-start space-x-2">
                         <span className="text-amil-red font-bold mr-1">•</span>
-                        <span className="leading-relaxed">{detail}</span>
+                        <span className="leading-relaxed">{renderPolicyDetail(detail)}</span>
                       </li>
                     ))}
                   </ul>
@@ -71,13 +117,19 @@ export const Policy = () => {
             Have specific inquiries regarding group bookings, early check-in, or special accommodations?
           </p>
           <p className="mt-1">
-            Please contact our Duty Manager directly at{' '}
+            For general stay assistance, please contact our Duty Manager directly at{' '}
             <a href={`tel:${hotelData.phone.replace(/\s+/g, '')}`} className="text-amil-red font-semibold hover:underline">
               {hotelData.phone}
             </a>{' '}
             or email{' '}
             <a href={`mailto:${hotelData.email}`} className="text-amil-red font-semibold hover:underline">
               {hotelData.email}
+            </a>.
+          </p>
+          <p className="mt-1 text-charcoal-text/80">
+            For unresolved service concerns or formal escalations, reach our dedicated Grievance Redressal line at{' '}
+            <a href={`tel:${hotelData.grievance.replace(/[\s-]+/g, '')}`} className="text-amil-red font-semibold hover:underline">
+              {hotelData.grievance}
             </a>.
           </p>
         </div>

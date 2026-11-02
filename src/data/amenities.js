@@ -7,7 +7,7 @@ export const amenitiesData = [
     description: "Saffron Restaurant is Hotel Amil's premier dining destination, offering an artfully curated menu crafted by master chefs. From traditional Virudhunagar biryanis and coastal seafood delicacies to tandoori grills and continental classics, every dish is prepared with locally-sourced native produce and fragrant hand-ground spices.",
     timings: "Breakfast: 7:00 AM – 10:30 AM | Lunch: 12:30 PM – 3:30 PM | Dinner: 7:00 PM – 11:00 PM",
     capacity: "Seating for 120 guests",
-    contact: "Dial Ext. 201 from your room or +91 4563 222 333",
+    contact: "Dial Ext. 201 from your room or +91 4563 233600",
     features: ["A la Carte & Buffet Options", "Private Family Dining Alcoves", "Vegetarian & Jain Selections Available", "Authentic Chettinad & Continental Specialists"],
     image: "/images/Dining/Restaurent_8k.png",
     pattern: "B"
@@ -48,7 +48,7 @@ export const amenitiesData = [
     timings: "Available for Morning, Evening, or Full-Day Reservations",
     capacity: "Up to 500 guests (Theater style) / 300 guests (Banquet round tables)",
     rules: "Advance booking and event menu consultation required through our dedicated Event Sales Office.",
-    contact: "Events Desk: +91 94433 12345 / events@hotelamil.com",
+    contact: "Events Desk: +91 78670 94947 / Info@hotelamil.com",
     features: ["Pillarless Grand Ballroom", "Integrated Concert-Grade AV & Stage Lighting", "Bridal Dressing Suite Included", "Customized Multi-Cuisine Catering"],
     image: "/images/amenities/banquetHall-8k.png",
     pattern: "B"

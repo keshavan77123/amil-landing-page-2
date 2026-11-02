@@ -4,18 +4,19 @@ export const hotelData = {
   city: "Rajapalayam",
   state: "Tamil Nadu",
   fullAddress: "120/4, Tenkasi Main Road, Near New Bus Stand, Rajapalayam, Tamil Nadu 626117, India",
-  phone: "+91 4563 222 333",
-  mobile: "+91 94433 12345",
-  email: "reservations@hotelamil.com",
-  inquiryEmail: "frontdesk@hotelamil.com",
-  whatsappNumber: "919443312345",
-  whatsappUrl: "https://wa.me/919443312345?text=Hello%20Hotel%20Amil%2C%20I%20would%20like%20to%20inquire%20about%20a%20room%20reservation.",
+  phone: "+91 4563 233600",
+  mobile: "+91 78670 94947",
+  grievance: "+91-8111007108",
+  email: "Info@hotelamil.com",
+  inquiryEmail: "Info@hotelamil.com",
+  whatsappNumber: "917867094947",
+  whatsappUrl: "https://wa.me/917867094947?text=Hello%20Hotel%20Amil%2C%20I%20would%20like%20to%20inquire%20about%20a%20room%20reservation.",
   checkInTime: "12:00 PM",
   checkOutTime: "11:00 AM",
   social: {
     instagram: "https://www.instagram.com/hotelamilrajapalayam/",
     facebook: "https://facebook.com/hotelamil",
-    whatsapp: "https://wa.me/919443312345",
+    whatsapp: "https://wa.me/917867094947",
   },
   policies: [
     {
@@ -74,6 +75,16 @@ export const hotelData = {
         "Alcoholic beverages must be consumed responsibly inside your private suite or in our licensed Amil Bar.",
         "Open containers and consumption in public hotel spaces, pool deck, or lobby areas is prohibited under local excise regulations.",
         "The minimum legal drinking age enforced is 21 years."
+      ]
+    },
+    {
+      id: "grievance-redressal",
+      title: "Grievance Redressal & Guest Assistance",
+      summary: "Hotel Amil is committed to prompt, respectful resolution of guest concerns and service feedback.",
+      details: [
+        "Guests with unresolved service concerns or formal feedback are encouraged to contact the dedicated Grievance Redressal line.",
+        "Dedicated Grievance Contact: +91-8111007108.",
+        "For general enquiries or routine stay assistance, contact the 24-hour reception desk at +91 4563 233600 or email Info@hotelamil.com."
       ]
     }
   ]

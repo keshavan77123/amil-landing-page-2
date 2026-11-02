@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Users, Bed, Wind, Wifi, Tv, Bath,
   Coffee, Shield, Sparkles, ArrowRight,
-  X, ChevronLeft, ChevronRight, Maximize2
+  X, ChevronLeft, ChevronRight, Maximize2,
+  Eye, Layers, Monitor, Mountain, RotateCw,
+  Plus, Minus, AlertCircle
 } from 'lucide-react';
 import RoomSpin360Viewer from './RoomSpin360Viewer';
 import RoomPanoramaViewer from './RoomPanoramaViewer';
 import AvailabilityBadge from './AvailabilityBadge';
-import PaymentOptions from './PaymentOptions';
 import { Button } from './ui/Button';
+import { useCart } from '../context/CartContext';
+import { CONFIRMED_ROOM_RATES, calculateItemSubtotal } from '../utils/cartPricing';
 
 // ── Icon mapping helper for amenity strings ────────────────────────────────────
 const getAmenityIcon = (amenityText) => {
@@ -24,9 +27,55 @@ const getAmenityIcon = (amenityText) => {
   return Sparkles;
 };
 
+// ── Key Amenities helper extracting concise confirmed amenities from room data ──
+const getKeyAmenities = (room) => {
+  if (!room) return [];
+  const list = [];
+  const lower = (room.amenities || []).map((a) => a.toLowerCase());
+
+  // 1. High-Speed WiFi
+  if (lower.some((a) => a.includes('wi-fi') || a.includes('wifi') || a.includes('internet'))) {
+    list.push({ label: 'High-Speed WiFi', icon: Wifi });
+  }
+  // 2. Workstation / Desk / Lounge
+  if (lower.some((a) => a.includes('desk') || a.includes('workstation'))) {
+    list.push({ label: 'Workstation Desk', icon: Monitor });
+  } else if (lower.some((a) => a.includes('lounge') || a.includes('salon'))) {
+    list.push({ label: 'Living Lounge', icon: Sparkles });
+  }
+  // 3. Tea / Coffee
+  if (lower.some((a) => a.includes('coffee') || a.includes('tea'))) {
+    list.push({ label: 'Tea/Coffee Maker', icon: Coffee });
+  }
+  // 4. Air Conditioning
+  if (lower.some((a) => a.includes('ac') || a.includes('climate') || a.includes('temperature'))) {
+    list.push({ label: 'Air Conditioning', icon: Wind });
+  }
+  // 5. Minibar / Pantry
+  if (lower.some((a) => a.includes('minibar') || a.includes('fridge') || a.includes('pantry'))) {
+    list.push({ label: 'Minibar', icon: Sparkles });
+  } else if (lower.some((a) => a.includes('soundproof'))) {
+    list.push({ label: 'Soundproofing', icon: Sparkles });
+  }
+  // 6. In-Room Safe
+  if (lower.some((a) => a.includes('safe'))) {
+    list.push({ label: 'In-Room Safe', icon: Shield });
+  }
+  // 7. Premium Bathroom
+  if (lower.some((a) => a.includes('bath') || a.includes('shower') || a.includes('tub'))) {
+    list.push({ label: 'Premium Bathroom', icon: Bath });
+  }
+  // 8. Scenic View
+  if (room.view && (room.view.includes('View') || room.view.includes('Mountain') || room.view.includes('Balcony'))) {
+    list.push({ label: 'Scenic View', icon: Mountain });
+  }
+
+  return list;
+};
+
 // ── Asymmetric Gallery with inline lightbox ───────────────────────────────────
 // Scoped to room-detail pages only. Does NOT modify PhotoGallery.jsx.
-const AsymmetricGallery = ({ images = [], roomName = 'Room' }) => {
+const AsymmetricGallery = ({ images = [], roomName = 'Room', hasPanorama = false, isTwinExecutive = false }) => {
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   if (!images || images.length === 0) return null;
@@ -143,15 +192,31 @@ const AsymmetricGallery = ({ images = [], roomName = 'Room' }) => {
         )}
       </div>
 
-      {/* ── View all photos button ──────────────────────────── */}
-      <button
-        type="button"
-        onClick={() => openLightbox(0)}
-        className="mt-4 inline-flex items-center space-x-2 text-[11px] font-sans font-semibold tracking-luxury uppercase text-charcoal-text hover:text-amil-red transition-colors border border-border-light/70 hover:border-amil-red px-4 py-2.5 bg-warm-white"
-      >
-        <Maximize2 className="w-3.5 h-3.5" />
-        <span>View All {images.length} Photos</span>
-      </button>
+      {/* ── View all photos and 360 Tour buttons ───────────── */}
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => openLightbox(0)}
+          className="inline-flex items-center space-x-2 text-[11px] font-sans font-semibold tracking-luxury uppercase text-charcoal-text hover:text-amil-red transition-colors border border-border-light/70 hover:border-amil-red px-4 py-2.5 bg-warm-white"
+        >
+          <Maximize2 className="w-3.5 h-3.5" />
+          <span>View All {images.length} Photos</span>
+        </button>
+
+        {isTwinExecutive && hasPanorama && (
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('virtual-tour-360');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-flex items-center space-x-2 text-[11px] font-sans font-semibold tracking-luxury uppercase text-muted-gold hover:text-amil-red transition-colors border border-muted-gold/60 hover:border-amil-red px-4 py-2.5 bg-warm-white shadow-xs"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+            <span>360° Virtual Tour</span>
+          </button>
+        )}
+      </div>
 
       {/* ── Lightbox modal ──────────────────────────────────── */}
       {lightboxIndex !== null && (
@@ -223,6 +288,7 @@ const SectionLabel = ({ number, label }) => (
 // ── Main RoomDetailView ───────────────────────────────────────────────────────
 export const RoomDetailView = ({ room }) => {
   const navigate = useNavigate();
+  const { addToCart, openCart } = useCart();
 
   // Date state with defaults
   const today = new Date().toISOString().split('T')[0];
@@ -232,8 +298,31 @@ export const RoomDetailView = ({ room }) => {
 
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(tomorrow);
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [rooms, setRooms] = useState(1);
   const [dateError, setDateError] = useState('');
-  const [selectedPayment, setSelectedPayment] = useState('hotel');
+  const [occupancyError, setOccupancyError] = useState('');
+  const keyAmenities = getKeyAmenities(room);
+
+  // Nights calculation (enforces minimum 1 night)
+  const nights = useMemo(() => {
+    if (!checkIn || !checkOut || checkOut <= checkIn) return 1;
+    const start = new Date(`${checkIn}T00:00:00`);
+    const end = new Date(`${checkOut}T00:00:00`);
+    const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.max(1, diffDays || 1);
+  }, [checkIn, checkOut]);
+
+  // Occupancy calculations
+  const totalGuests = adults + children;
+  const maxOccupancyPerRoom = room?.maxOccupancy || 3;
+  const maxPermittedGuests = maxOccupancyPerRoom * rooms;
+  const isOccupancyExceeded = totalGuests > maxPermittedGuests;
+
+  // Authoritative room rate and subtotal preview
+  const ratePerNight = CONFIRMED_ROOM_RATES[room?.id] || room?.startingPrice || 0;
+  const estimatedSubtotal = calculateItemSubtotal(ratePerNight, nights, rooms);
 
   if (!room) {
     return (
@@ -246,14 +335,44 @@ export const RoomDetailView = ({ room }) => {
     );
   }
 
-  // ── Booking handlers (unchanged logic) ─────────────────────────────────────
+  // ── Stay & Guest Handlers ──────────────────────────────────────────────────
+  const handleRoomsChange = (updater) => {
+    setRooms((prev) => {
+      const raw = typeof updater === 'function' ? updater(prev) : updater;
+      return Math.max(1, Math.round(Number(raw) || 1));
+    });
+    setOccupancyError('');
+  };
+
+  const handleAdultsChange = (updater) => {
+    setAdults((prev) => {
+      const raw = typeof updater === 'function' ? updater(prev) : updater;
+      return Math.max(1, Math.round(Number(raw) || 1));
+    });
+    setOccupancyError('');
+  };
+
+  const handleChildrenChange = (updater) => {
+    setChildren((prev) => {
+      const raw = typeof updater === 'function' ? updater(prev) : updater;
+      return Math.max(0, Math.round(Number(raw) || 0));
+    });
+    setOccupancyError('');
+  };
+
   const handleCheckInChange = (e) => {
     const val = e.target.value;
     setCheckIn(val);
+    if (val < today) {
+      setDateError('Check-in date cannot be in the past.');
+      return;
+    }
     if (checkOut && val >= checkOut) {
       const nextDay = new Date(val);
       nextDay.setDate(nextDay.getDate() + 1);
       setCheckOut(nextDay.toISOString().split('T')[0]);
+      setDateError('');
+    } else {
       setDateError('');
     }
   };
@@ -262,10 +381,59 @@ export const RoomDetailView = ({ room }) => {
     const val = e.target.value;
     if (val <= checkIn) {
       setDateError('Check-out date must be after check-in date.');
+      setCheckOut(val);
     } else {
       setDateError('');
       setCheckOut(val);
     }
+  };
+
+  const handleAddToReservation = () => {
+    // 1. Date Validation
+    if (!checkIn || checkIn < today) {
+      setDateError('Check-in date cannot be in the past.');
+      return;
+    }
+    if (!checkOut || checkOut <= checkIn) {
+      setDateError('Please ensure check-out date is later than check-in date.');
+      return;
+    }
+    if (nights < 1) {
+      setDateError('At least one night must be selected.');
+      return;
+    }
+
+    // 2. Occupancy Validation
+    if (isOccupancyExceeded) {
+      setOccupancyError(
+        `Occupancy limit exceeded: ${rooms} ${rooms === 1 ? 'room accommodates' : 'rooms accommodate'} up to ${maxPermittedGuests} guests (${totalGuests} selected: ${adults} ${adults === 1 ? 'adult' : 'adults'}${children > 0 ? `, ${children} ${children === 1 ? 'child' : 'children'}` : ''}). Please add more rooms or adjust guest count.`
+      );
+      return;
+    }
+
+    // Clear any previous errors
+    setDateError('');
+    setOccupancyError('');
+
+    // 3. Prepare Cart Item payload conforming to established contract
+    const itemData = {
+      roomId: room.id,
+      roomName: room.name,
+      category: room.category || room.name,
+      image: room.images && room.images.length > 0 ? room.images[0] : '',
+      checkIn: checkIn,
+      checkOut: checkOut,
+      nights: nights,
+      adults: adults,
+      children: children,
+      rooms: rooms,
+      ratePerNight: ratePerNight,
+      subtotal: estimatedSubtotal,
+    };
+
+    // 4. Add to cart and automatically open reservation drawer
+    addToCart(itemData);
+    openCart();
   };
 
   const handleProceedToBooking = () => {
@@ -273,11 +441,18 @@ export const RoomDetailView = ({ room }) => {
       setDateError('Please ensure check-out date is later than check-in date.');
       return;
     }
+    if (isOccupancyExceeded) {
+      setOccupancyError(`Occupancy limit exceeded: ${rooms} ${rooms === 1 ? 'room accommodates' : 'rooms accommodate'} up to ${maxPermittedGuests} guests.`);
+      return;
+    }
     const params = new URLSearchParams({
       room: room.id,
       checkIn: checkIn,
       checkOut: checkOut,
-      payment: selectedPayment,
+      adults: adults.toString(),
+      children: children.toString(),
+      rooms: rooms.toString(),
+      payment: 'hotel',
     });
     navigate(`/booking?${params.toString()}`);
   };
@@ -340,7 +515,12 @@ export const RoomDetailView = ({ room }) => {
 
           {/* Gallery column */}
           <div className="lg:col-span-8">
-            <AsymmetricGallery images={room.images} roomName={room.name} />
+            <AsymmetricGallery
+              images={room.images}
+              roomName={room.name}
+              hasPanorama={!!room.panorama}
+              isTwinExecutive={room.id === 'twin-executive'}
+            />
           </div>
 
           {/* Booking card column — sticky on desktop */}
@@ -356,7 +536,7 @@ export const RoomDetailView = ({ room }) => {
                   <span className="text-3xl font-serif text-charcoal">
                     ₹{room.singlePrice.toLocaleString('en-IN')}
                   </span>
-                  <span className="text-xs font-sans text-text-muted">/ night (Single)</span>
+                  <span className="text-xs font-sans text-text-muted">/ night</span>
                 </div>
 
                 {/* Pricing breakdown table */}
@@ -390,9 +570,14 @@ export const RoomDetailView = ({ room }) => {
 
               {/* Date Selection */}
               <div className="border-t border-border-light/60 pt-4 space-y-3">
-                <span className="text-[10px] uppercase font-sans font-semibold tracking-luxury text-text-muted block">
-                  Select Stay Dates
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-sans font-semibold tracking-luxury text-text-muted block">
+                    Select Stay Dates
+                  </span>
+                  <span className="text-[11px] font-sans text-text-muted font-medium" data-testid="rdv-nights-count">
+                    {nights} {nights === 1 ? 'Night' : 'Nights'}
+                  </span>
+                </div>
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label htmlFor="rdv-checkin" className="text-[11px] font-sans text-charcoal-text font-medium block mb-1">
@@ -422,31 +607,178 @@ export const RoomDetailView = ({ room }) => {
                   </div>
                 </div>
                 {dateError && (
-                  <p className="text-[11px] text-rose-600 font-sans" role="alert">{dateError}</p>
+                  <p className="text-[11px] text-rose-600 font-sans flex items-center space-x-1" role="alert" data-testid="rdv-date-error">
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0 inline mr-1" />
+                    <span>{dateError}</span>
+                  </p>
                 )}
               </div>
 
-              {/* Payment Options */}
-              <div className="border-t border-border-light/60 pt-4">
-                <PaymentOptions
-                  selectedOption={selectedPayment}
-                  onSelect={(id) => setSelectedPayment(id)}
-                />
+              {/* Guest & Room Quantity Controls */}
+              <div className="border-t border-border-light/60 pt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-sans font-semibold tracking-luxury text-text-muted block">
+                    Guests &amp; Rooms
+                  </span>
+                  <span className="text-[11px] font-sans text-text-muted">
+                    Max {room.maxOccupancy} / room
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {/* Rooms Selector */}
+                  <div className="bg-white border border-border-light p-2.5 rounded-[2px] flex flex-col justify-between">
+                    <span className="text-[11px] font-sans font-medium text-charcoal-text block mb-1.5 text-center">
+                      Rooms
+                    </span>
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => handleRoomsChange((prev) => prev - 1)}
+                        disabled={rooms <= 1}
+                        aria-label="Decrease number of rooms"
+                        data-testid="rdv-rooms-dec"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-charcoal disabled:hover:border-border-light transition-colors"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="text-xs font-serif font-semibold text-charcoal" data-testid="rdv-rooms-count">
+                        {rooms}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRoomsChange((prev) => prev + 1)}
+                        aria-label="Increase number of rooms"
+                        data-testid="rdv-rooms-inc"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Adults Selector */}
+                  <div className="bg-white border border-border-light p-2.5 rounded-[2px] flex flex-col justify-between">
+                    <span className="text-[11px] font-sans font-medium text-charcoal-text block mb-1.5 text-center">
+                      Adults
+                    </span>
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => handleAdultsChange((prev) => prev - 1)}
+                        disabled={adults <= 1}
+                        aria-label="Decrease number of adults"
+                        data-testid="rdv-adults-dec"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-charcoal disabled:hover:border-border-light transition-colors"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="text-xs font-serif font-semibold text-charcoal" data-testid="rdv-adults-count">
+                        {adults}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleAdultsChange((prev) => prev + 1)}
+                        aria-label="Increase number of adults"
+                        data-testid="rdv-adults-inc"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Children Selector */}
+                  <div className="bg-white border border-border-light p-2.5 rounded-[2px] flex flex-col justify-between">
+                    <span className="text-[11px] font-sans font-medium text-charcoal-text block mb-1.5 text-center">
+                      Children
+                    </span>
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => handleChildrenChange((prev) => prev - 1)}
+                        disabled={children <= 0}
+                        aria-label="Decrease number of children"
+                        data-testid="rdv-children-dec"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-charcoal disabled:hover:border-border-light transition-colors"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="text-xs font-serif font-semibold text-charcoal" data-testid="rdv-children-count">
+                        {children}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleChildrenChange((prev) => prev + 1)}
+                        aria-label="Increase number of children"
+                        data-testid="rdv-children-inc"
+                        className="w-6 h-6 rounded flex items-center justify-center border border-border-light text-charcoal hover:bg-amil-red hover:text-white hover:border-amil-red transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Occupancy Validation Alert */}
+                {isOccupancyExceeded && (
+                  <div
+                    className="p-2.5 bg-rose-50 border border-rose-200 text-rose-800 text-[11px] font-sans rounded-[2px] leading-relaxed flex items-start space-x-2"
+                    role="alert"
+                    data-testid="rdv-occupancy-error"
+                  >
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong>Occupancy limit exceeded:</strong> {rooms} {rooms === 1 ? 'room accommodates' : 'rooms accommodate'} up to {maxPermittedGuests} guests ({totalGuests} selected: {adults} {adults === 1 ? 'adult' : 'adults'}{children > 0 ? `, ${children} ${children === 1 ? 'child' : 'children'}` : ''}). Please add more rooms or adjust guest count.
+                    </div>
+                  </div>
+                )}
+
+                {/* Stay Summary / Estimation Box */}
+                <div className="bg-[#FAF7F2] border border-[#E8DEC8] p-2.5 rounded-[2px] text-xs font-sans space-y-1">
+                  <div className="flex justify-between text-text-muted text-[11px]">
+                    <span>Stay Duration:</span>
+                    <span className="font-medium text-charcoal">{nights} {nights === 1 ? 'Night' : 'Nights'}</span>
+                  </div>
+                  <div className="flex justify-between text-text-muted text-[11px]">
+                    <span>Accommodation:</span>
+                    <span className="font-medium text-charcoal">{rooms} {rooms === 1 ? 'Room' : 'Rooms'} · {totalGuests} {totalGuests === 1 ? 'Guest' : 'Guests'}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-[#E8DEC8] pt-1 text-charcoal font-semibold text-xs">
+                    <span>Estimated Total:</span>
+                    <span className="text-amil-red font-serif text-sm">₹{estimatedSubtotal.toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Booking CTA */}
-              <div className="border-t border-border-light/60 pt-4">
+              {/* Reservation & Booking Actions */}
+              <div className="border-t border-border-light/60 pt-4 space-y-2.5">
+                {/* Primary Action: Add to Shopping Cart Reservation */}
                 <Button
                   variant="primary"
                   size="lg"
+                  onClick={handleAddToReservation}
+                  className="w-full text-xs tracking-luxury py-4 shadow-md flex items-center justify-center space-x-2 active:scale-[0.99] transition-all"
+                  data-testid="rdv-add-to-reservation-btn"
+                >
+                  <Bed className="w-4 h-4 shrink-0" />
+                  <span>Add to Reservation</span>
+                </Button>
+
+                {/* Secondary Action: Direct Booking Enquiry */}
+                <Button
+                  variant="secondary"
+                  size="lg"
                   onClick={handleProceedToBooking}
-                  className="w-full text-xs tracking-luxury py-4 shadow-md flex items-center justify-center space-x-2"
+                  className="w-full text-xs tracking-luxury py-3 shadow-xs flex items-center justify-center space-x-2 active:scale-[0.99] transition-all"
+                  data-testid="rdv-proceed-enquiry-btn"
                 >
                   <span>Proceed to Booking Enquiry</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
-                <p className="text-[10px] text-text-muted text-center mt-2.5 font-light">
-                  Direct enquiry · Instant confirmation via WhatsApp &amp; Email
+
+                <p className="text-[10px] text-text-muted text-center pt-1 font-light">
+                  Reserve multiple rooms in cart · Or proceed with direct enquiry
                 </p>
               </div>
 
@@ -456,67 +788,161 @@ export const RoomDetailView = ({ room }) => {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 02 — ABOUT THIS ROOM
+          SECTION 02 — ROOM DETAILS + 360° VIRTUAL TOUR
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="mb-16 border-t border-border-light/60 pt-12" aria-label="About This Room">
-        <SectionLabel number="02" label="About This Room" />
+      <section className="mb-16 border-t border-border-light/60 pt-12" aria-label="Room Details and 360 Virtual Tour">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-14 items-center">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* Room description */}
-          <div className="lg:col-span-7">
-            <p className="text-sm md:text-base font-sans text-text-muted font-light leading-relaxed">
-              {room.description}
-            </p>
-          </div>
-
-          {/* Room key specs panel */}
-          <div className="lg:col-span-5">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-4 p-5 bg-warm-white border border-border-light/60 text-xs font-sans">
-              <div className="space-y-1">
-                <span className="text-text-muted block text-[10px] uppercase tracking-luxury">Room Space</span>
-                <span className="font-medium text-charcoal">{room.size}</span>
+          {/* Left Column: 1:1 Aspect Ratio Square 360° Virtual Tour Viewer */}
+          <div className="lg:col-span-6 w-full" id="virtual-tour-360">
+            {room.id === 'twin-executive' && (
+              <div className="mb-3.5">
+                <span className="text-[11px] uppercase font-sans font-semibold tracking-luxury text-amil-red block">
+                  EXPLORE THE ROOM IN 360°
+                </span>
+                <p className="text-xs sm:text-sm text-text-muted font-sans font-light mt-1">
+                  Discover every corner of our Twin Executive Room through an immersive panoramic experience.
+                </p>
               </div>
-              <div className="space-y-1">
-                <span className="text-text-muted block text-[10px] uppercase tracking-luxury">Bedding</span>
-                <span className="font-medium text-charcoal">{room.bedType}</span>
-              </div>
-              <div className="space-y-1">
-                <span className="text-text-muted block text-[10px] uppercase tracking-luxury">Outlook</span>
-                <span className="font-medium text-charcoal">{room.view}</span>
-              </div>
-              <div className="space-y-1">
-                <span className="text-text-muted block text-[10px] uppercase tracking-luxury">Floor</span>
-                <span className="font-medium text-charcoal">{room.floor}</span>
-              </div>
-              <div className="col-span-2 pt-3 border-t border-border-light/60 space-y-1">
-                <span className="text-text-muted block text-[10px] uppercase tracking-luxury">Maximum Permitted Occupancy</span>
-                <span className="font-medium text-charcoal">{room.maxOccupancy} Guests</span>
-              </div>
+            )}
+            <div className="relative w-full aspect-square overflow-hidden bg-charcoal border border-muted-gold/50 shadow-soft-luxury [&>div]:!h-full [&>div]:!w-full [&>div]:!max-w-none [&>div]:!mx-0 [&>div]:!border-0 [&_img]:!object-contain">
+              {room.panorama ? (
+                <RoomPanoramaViewer panorama={room.panorama} roomName={room.name} />
+              ) : (
+                <RoomSpin360Viewer images={room.spinImages} />
+              )}
             </div>
           </div>
+
+          {/* Right Column: Room Information & Specifications */}
+          <div className="lg:col-span-6 w-full">
+            {/* Section Number & Divider */}
+            <div className="mb-3.5 flex items-center space-x-3">
+              <span className="text-muted-gold font-serif text-sm leading-none font-semibold">02</span>
+              <div className="w-12 h-[1px] bg-muted-gold/60" />
+            </div>
+
+            {/* Room Name Heading */}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-amil-red-dark font-normal leading-tight mb-2 tracking-tight">
+              {room.name}
+            </h2>
+
+            {/* Room Tagline / Subtitle */}
+            <p className="text-xs font-sans font-semibold tracking-luxury uppercase text-muted-gold mb-4">
+              {room.tagline}
+            </p>
+
+            {/* Room Description */}
+            <p className="text-xs sm:text-sm lg:text-base font-sans text-text-muted font-light leading-relaxed mb-6">
+              {room.description}
+            </p>
+
+            {/* Room Specifications Panel */}
+            <div className="bg-warm-white border border-border-light/80 p-5 sm:p-6 mb-6 text-xs font-sans shadow-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+
+                {/* Room Space */}
+                <div className="flex items-start space-x-3 sm:pr-4 sm:border-r sm:border-border-light/60">
+                  <Maximize2 className="w-4 h-4 text-muted-gold flex-shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 min-w-0">
+                    <span className="text-text-muted block text-[10px] uppercase tracking-luxury font-medium">
+                      ROOM SPACE
+                    </span>
+                    <span className="font-medium text-charcoal block text-xs sm:text-sm">
+                      {room.size}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bedding */}
+                <div className="flex items-start space-x-3 sm:pl-2">
+                  <Bed className="w-4 h-4 text-muted-gold flex-shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 min-w-0">
+                    <span className="text-text-muted block text-[10px] uppercase tracking-luxury font-medium">
+                      BEDDING
+                    </span>
+                    <span className="font-medium text-charcoal block text-xs sm:text-sm">
+                      {room.bedType}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Outlook */}
+                <div className="flex items-start space-x-3 sm:pr-4 sm:border-r sm:border-border-light/60 border-t border-border-light/60 pt-4 sm:border-t-0 sm:pt-0">
+                  <Eye className="w-4 h-4 text-muted-gold flex-shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 min-w-0">
+                    <span className="text-text-muted block text-[10px] uppercase tracking-luxury font-medium">
+                      OUTLOOK
+                    </span>
+                    <span className="font-medium text-charcoal block text-xs sm:text-sm">
+                      {room.view}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Floor */}
+                <div className="flex items-start space-x-3 sm:pl-2 border-t border-border-light/60 pt-4 sm:border-t-0 sm:pt-0">
+                  <Layers className="w-4 h-4 text-muted-gold flex-shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 min-w-0">
+                    <span className="text-text-muted block text-[10px] uppercase tracking-luxury font-medium">
+                      FLOOR
+                    </span>
+                    <span className="font-medium text-charcoal block text-xs sm:text-sm">
+                      {room.floor}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Maximum Permitted Occupancy */}
+                <div className="col-span-1 sm:col-span-2 pt-4 border-t border-border-light/60 flex items-start space-x-3">
+                  <Users className="w-4 h-4 text-muted-gold flex-shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 min-w-0">
+                    <span className="text-text-muted block text-[10px] uppercase tracking-luxury font-medium">
+                      MAXIMUM PERMITTED OCCUPANCY
+                    </span>
+                    <span className="font-medium text-charcoal block text-xs sm:text-sm">
+                      {room.maxOccupancy} Guests
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Key Amenities Underneath Specs */}
+            {keyAmenities.length > 0 && (
+              <div>
+                <span className="text-[10px] font-sans font-semibold tracking-luxury uppercase text-muted-gold block mb-3">
+                  KEY AMENITIES
+                </span>
+                <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 gap-2.5 text-center">
+                  {keyAmenities.map((item, idx) => {
+                    const ItemIcon = item.icon;
+                    return (
+                      <div
+                        key={idx}
+                        className="flex flex-col items-center justify-center p-2 rounded-[2px] bg-warm-white border border-border-light/60 shadow-xs"
+                      >
+                        <ItemIcon className="w-4 h-4 text-muted-gold flex-shrink-0 mb-1" />
+                        <span className="text-[9px] font-sans text-charcoal leading-tight line-clamp-2">
+                          {item.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 03 — EXPLORE THE ROOM (360° VIEWER)
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section className="mb-16 border-t border-border-light/60 pt-12" aria-label="360 Virtual Room Tour">
-        <SectionLabel number="03" label="Explore the Room" />
-        <p className="text-xs text-text-muted font-sans mb-5 -mt-1">
-          Drag to look around &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click fullscreen for an immersive walkthrough
-        </p>
-        {room.panorama ? (
-          <RoomPanoramaViewer panorama={room.panorama} />
-        ) : (
-          <RoomSpin360Viewer images={room.spinImages} />
-        )}
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 04 — ROOM AMENITIES
+          SECTION 03 — ROOM AMENITIES
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="border-t border-border-light/60 pt-12" aria-label="Room Amenities">
-        <SectionLabel number="04" label="Room Amenities" />
+        <SectionLabel number="03" label="Room Amenities" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {room.amenities.map((amenity, idx) => {
             const Icon = getAmenityIcon(amenity);
